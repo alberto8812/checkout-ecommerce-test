@@ -1,98 +1,294 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend de Checkout Ecommerce
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Descripción
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Backend de una aplicación de e-commerce construido con **NestJS** y **PostgreSQL**. El proyecto implementa una arquitectura limpia con separación de responsabilidades entre capas de aplicación, dominio e infraestructura.
 
-## Description
+## 🚀 Tecnologías
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **NestJS** - Framework de Node.js para aplicaciones escalables
+- **TypeScript** - Lenguaje de tipado estático
+- **Prisma** - ORM para gestión de base de datos
+- **PostgreSQL** - Base de datos relacional
+- **Swagger** - Documentación automática de APIs
+- **Jest** - Framework de testing
+- **ESLint & Prettier** - Linting y formateo de código
 
-## Project setup
+## 📋 Requisitos Previos
+
+- Node.js (v18 o superior)
+- pnpm o npm
+- PostgreSQL (v12 o superior)
+
+## ⚙️ Instalación
+
+### 1. Clonar el repositorio
 
 ```bash
-$ pnpm install
+git clone <repository-url>
+cd checkout-ecommerce/back
 ```
 
-## Compile and run the project
+### 2. Instalar dependencias
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+pnpm install
 ```
 
-## Run tests
+### 3. Configurar variables de entorno
+
+Crea un archivo `.env` en la raíz del proyecto (o usa `.env.template` como referencia):
+
+```env
+# Configuración de Base de Datos
+DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/base_datos"
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=usuario
+DB_PASSWORD=contraseña
+DB_NAME=base_datos
+
+# Configuración de Servidor
+PORT=3000
+```
+
+### 4. Configurar la base de datos
 
 ```bash
-# unit tests
-$ pnpm run test
+# Crear el esquema y tablas
+pnpm exec prisma migrate dev
 
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+# Generar el cliente de Prisma
+pnpm exec prisma generate
 ```
 
-## Deployment
+## 🌱 Seedear la Base de Datos
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Para poblar la base de datos con datos iniciales (1 producto y su stock):
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+pnpm seed
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Esto creará:
+- **1 Producto**: Laptop HP Pavilion 15
+  - Precio: $899.99
+  - Descripción: Laptop de alto rendimiento con procesador Intel i7, 16GB RAM y 512GB SSD
+  - Imagen: URL de Unsplash
+- **1 Stock** asociado al producto con cantidad inicial de 10 unidades
 
-## Resources
+## 🏃 Ejecución
 
-Check out a few resources that may come in handy when working with NestJS:
+### Modo desarrollo
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+pnpm start:dev
+```
 
-## Support
+El servidor estará disponible en `http://localhost:3000`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Modo producción
 
-## Stay in touch
+```bash
+# Compilar proyecto
+pnpm build
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Iniciar servidor compilado
+pnpm start:prod
+```
 
-## License
+### Modo debug
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+pnpm start:debug
+```
+
+## 🧪 Testing
+
+```bash
+# Ejecutar pruebas unitarias
+pnpm test
+
+# Modo watch
+pnpm test:watch
+
+# Coverage
+pnpm test:cov
+
+# Pruebas e2e
+pnpm test:e2e
+```
+
+## 📝 Linting y Formateo
+
+```bash
+# Ejecutar eslint
+pnpm lint
+
+# Formatear código
+pnpm format
+```
+
+## 🏗️ Estructura del Proyecto
+
+```
+src/
+├── config/              # Configuración de la aplicación
+├── modules/             # Módulos de negocio
+│   └── products/        # Módulo de productos
+│       ├── application/ # Casos de uso y DTOs
+│       ├── domain/      # Modelos de dominio
+│       └── infrastructure/ # Controladores y repositorios
+├── shared/              # Código compartido
+│   ├── database/        # Gestión de base de datos
+│   ├── decorators/      # Decoradores personalizados
+│   └── exceptions/      # Excepciones personalizadas
+├── app.module.ts        # Módulo raíz
+└── main.ts              # Punto de entrada
+```
+
+## 📊 Modelos de Base de Datos
+
+### Product (Producto)
+- `id` - Identificador único (CUID)
+- `name` - Nombre del producto
+- `description` - Descripción del producto
+- `price` - Precio del producto
+- `base_fee` - Tarifa base de transacción
+- `image` - URL de la imagen del producto
+- `stock` - Relación con tabla Stock
+- `transactions` - Relación con tabla Transaction
+
+### Stock (Inventario)
+- `id` - Identificador único (CUID)
+- `productId` - Referencia al producto
+- `quantity` - Cantidad total disponible
+- `real_stock` - Stock real en inventario
+- `reserved_stock` - Stock reservado
+- `product` - Relación con tabla Product
+
+### Customer (Cliente)
+- `id` - Identificador único (CUID)
+- `name` - Nombre del cliente
+- `email` - Correo electrónico (único)
+- `phone` - Teléfono
+- `address` - Dirección
+- `city`, `state`, `country`, `zip_code` - Información de ubicación
+- `transactions` - Relación con tabla Transaction
+
+### Transaction (Transacción)
+- `id` - Identificador único (CUID)
+- `customerId` - Referencia al cliente
+- `amount` - Monto de la transacción
+- `currency` - Moneda
+- `status` - Estado de la transacción
+- `wompi_transaction_id` - ID de transacción en Wompi
+- `products` - Relación con tabla Product
+- `deliveries` - Relación con tabla Delivery
+
+### Delivery (Entrega)
+- `id` - Identificador único (CUID)
+- `transactionId` - Referencia a la transacción
+- `delivery_address` - Dirección de entrega
+- `delivery_fee` - Costo de envío
+- `status` - Estado del envío
+- `transaction` - Relación con tabla Transaction
+
+## 📚 Documentación de API
+
+Una vez que el servidor está corriendo, puedes acceder a la documentación interactiva de Swagger en:
+
+```
+http://localhost:3000/api
+```
+
+## 🤝 Migraciones de Base de Datos
+
+Ver el estado de las migraciones:
+```bash
+pnpm exec prisma migrate status
+```
+
+Crear una nueva migración:
+```bash
+pnpm exec prisma migrate dev --name nombre_migracion
+```
+
+Resetear la base de datos (desarrollo solamente):
+```bash
+pnpm exec prisma migrate reset
+```
+
+Visualizar datos en Prisma Studio:
+```bash
+pnpm exec prisma studio
+```
+
+## 🔧 Comandos Útiles
+
+```bash
+# Generar tipos de Prisma
+pnpm exec prisma generate
+
+# Ver esquema visual
+pnpm exec prisma studio
+
+# Limpiar y resetear
+pnpm exec prisma migrate reset --force
+
+# Ejecutar seed
+pnpm seed
+```
+
+## 📦 Scripts del Proyecto
+
+- `pnpm build` - Compilar proyecto
+- `pnpm start` - Iniciar servidor
+- `pnpm start:dev` - Iniciar en modo desarrollo con watch
+- `pnpm start:debug` - Iniciar en modo debug
+- `pnpm start:prod` - Iniciar servidor compilado
+- `pnpm test` - Ejecutar pruebas
+- `pnpm test:watch` - Pruebas en modo watch
+- `pnpm test:cov` - Pruebas con reporte de cobertura
+- `pnpm test:e2e` - Pruebas end-to-end
+- `pnpm lint` - Ejecutar linter
+- `pnpm format` - Formatear código
+- `pnpm seed` - Poblar base de datos con datos iniciales
+
+## 🔐 Seguridad
+
+- Valida todas las variables de entorno
+- Utiliza Joi para validación de esquemas
+- Implementa DTOs para validación de entrada
+- Las contraseñas nunca se almacenan en logs
+
+## 🐛 Troubleshooting
+
+### Error de conexión a base de datos
+- Verifica que PostgreSQL esté corriendo
+- Revisa las credenciales en el archivo `.env`
+- Verifica que la base de datos existe
+
+### Error en migraciones
+```bash
+# Resetear migraciones (solo en desarrollo)
+pnpm exec prisma migrate reset --force
+```
+
+### Errores de tipado de Prisma
+```bash
+# Regenerar cliente de Prisma
+pnpm exec prisma generate
+```
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia UNLICENSED.
+
+## 👤 Autor
+
+Proyecto desarrollado con NestJS y Prisma.
+
+---
+
+**Nota**: Asegúrate de configurar correctamente las variables de entorno antes de ejecutar el proyecto.
