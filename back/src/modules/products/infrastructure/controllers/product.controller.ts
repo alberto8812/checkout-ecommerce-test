@@ -2,13 +2,14 @@ import { Body, Controller, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Endpoint } from 'src/shared/decorators/endpoint.decorator';
 import { ExceptionResponse } from 'src/shared/exceptions/exception-response';
-import { CreateProductDto } from '../../application/dto/create-product.dto';
 import { UpdateProductDto } from '../../application/dto/update-product.dto';
+import { ProductUseCaseService } from '../../application/use-cases/product-use-case.service';
+import { CreateProductDto } from '../../application/dto/create-product.dto';
 
 @ApiTags('Inventory - Products')
 @Controller('inventory/products')
 export class ProductController {
-  constructor(private readonly) { }
+  constructor(private readonly productUseCaseService: ProductUseCaseService) { }
 
   @Endpoint({
     method: 'POST',
@@ -20,7 +21,7 @@ export class ProductController {
     ],
   })
   create(@Body() createProductDto: CreateProductDto) {
-
+    return this.productUseCaseService.create(createProductDto);
   }
 
 

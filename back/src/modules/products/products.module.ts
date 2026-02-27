@@ -18,6 +18,8 @@ import { ProductController } from './infrastructure/controllers/product.controll
       provide: PRODUCT_USE_CASE,
       useClass: ProductUseCaseService,
     },
+    PrismaProductRepository,
+    ProductUseCaseService,
   ],
 })
 export class ProductsModule { }
