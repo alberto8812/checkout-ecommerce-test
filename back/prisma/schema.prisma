@@ -19,6 +19,7 @@ model Product {
   description  String
   price        Float
   base_fee     Float
+  image        String?
   stock        Stock[]
   transactions Transaction[]
 }
