@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import { useGet } from "@/shared/predentation/queries/useGet";
 import { getProduct } from "../api/get_product";
-
+import { StarRating } from "@/components/ui/StarRating";
 
 const trustBadges = [
   { icon: ShieldCheck, label: "Pago seguro" },
@@ -13,23 +13,7 @@ const trustBadges = [
   { icon: Lock, label: "Garantía 2 años" },
 ];
 
-/* ─── Star rating ──────────────────────────────────────────────────────────── */
-function StarRating({ rating, total = 5 }: { rating: number; total?: number }) {
-  return (
-    <div className="flex flex-row items-center gap-[2px]">
-      {Array.from({ length: total }).map((_, i) => (
-        <Star
-          key={i}
-          className={`h-4 w-4 shrink-0 ${
-            i < rating
-              ? "fill-amber-400 text-amber-400"
-              : "fill-slate-200 text-slate-200"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
+
 
 /* ─── ProductPage ──────────────────────────────────────────────────────────── */
 export const ProductPage = () => {
@@ -58,8 +42,8 @@ export const ProductPage = () => {
   }
 
   return (
-    <Card className="enterprise-card border-none shadow-none bg-transparent">
-      <CardContent className="product-split p-0">
+    <Card className="border-none shadow-none bg-transparent">
+      <CardContent className="product-split p-0 enterprise-card">
         {/* ── Left Column: Product Image ── */}
         <div className="relative mb-5 min-h-[320px] h-full overflow-hidden rounded-xl bg-slate-100 border border-slate-200/80 md:mb-0">
           <img
@@ -101,7 +85,7 @@ export const ProductPage = () => {
           </div>
 
           {/* ── Description ── */}
-          <p className="mb-4 text-sm leading-relaxed text-slate-600">
+          <p className="mb-4 text-sm leading-relaxed text-slate-600  ">
             {product.description}
           </p>
 
