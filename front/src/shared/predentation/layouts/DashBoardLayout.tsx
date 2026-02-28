@@ -3,7 +3,7 @@ import { PageError } from "../handkeErrors/PageError";
 import { ErrorBoundary } from "../handkeErrors/GlobalErrorBoundary";
 import React from "react";
 import { Package, User, FileText, CheckCircle } from "lucide-react";
-
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 const steps = [
   { number: 1, label: "Producto", icon: Package },
   { number: 2, label: "Datos", icon: User },
@@ -90,26 +90,31 @@ export const DashboardLayout = () => {
                     )}
 
                     {/* Step Icon with Tooltip */}
-                    <div
-                      className="tooltip-container"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "32px",
-                        height: "32px",
-                        borderRadius: "50%",
-                        backgroundColor: isActive ? "var(--green-50)" : "transparent",
-                        border: isActive ? "2px solid var(--green-500)" : "2px solid var(--border-default)",
-                        color: isActive ? "var(--green-500)" : "var(--border-default)",
-                        transition: "all 0.3s ease",
-                        cursor: "pointer",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Icon size={isActive ? 16 : 14} strokeWidth={isActive ? 2.5 : 2} />
-                      <span className="tooltip-text">{step.label}</span>
-                    </div>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "50%",
+                            backgroundColor: isActive ? "var(--green-50)" : "transparent",
+                            border: isActive ? "2px solid var(--green-500)" : "2px solid var(--border-default)",
+                            color: isActive ? "var(--green-500)" : "var(--border-default)",
+                            transition: "all 0.3s ease",
+                            cursor: "pointer",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <Icon size={isActive ? 16 : 14} strokeWidth={isActive ? 2.5 : 2} />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" sideOffset={5}>
+                        <p>{step.label}</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </React.Fragment>
                 );
               })}

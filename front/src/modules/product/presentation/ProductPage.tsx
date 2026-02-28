@@ -1,4 +1,8 @@
 import { ShieldCheck, Star, Truck, Check, Lock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
 
 /* ─── Mock data ──────────────────────────────────────────────────────────── */
 const product = {
@@ -48,8 +52,8 @@ function StarRating({ rating, total = 5 }: { rating: number; total?: number }) {
 /* ─── ProductPage ─────────────────────────────────────────────────────────── */
 export const ProductPage = () => {
   return (
-    <div className="enterprise-card">
-      <div className="product-split">
+    <Card className="enterprise-card border-none shadow-none bg-transparent">
+      <CardContent className="product-split p-0">
         {/* ── Left Column: Product Image ── */}
         <div
           className="relative overflow-hidden mb-5 md:mb-0"
@@ -69,15 +73,12 @@ export const ProductPage = () => {
           />
 
           {/* Disponible badge overlay */}
-          <span
-            className="absolute right-4 top-4 rounded-full px-3 py-1 text-xs font-semibold z-10"
-            style={{
-              backgroundColor: "var(--green-500)",
-              color: "#fff",
-            }}
+          <Badge 
+            className="absolute right-4 top-4 z-10 text-xs py-1"
+            style={{ backgroundColor: "var(--green-500)", color: "#fff" }}
           >
             Disponible
-          </span>
+          </Badge>
         </div>
 
         {/* ── Right Column: Product Details & Actions ── */}
@@ -192,9 +193,7 @@ export const ProductPage = () => {
                     </span>
                   </div>
                   {index < trustBadges.length - 1 && (
-                    <div
-                      style={{ height: "2rem", width: "1px", backgroundColor: "var(--border-subtle)", flexShrink: 0 }}
-                    />
+                    <Separator orientation="vertical" className="h-8 mx-2 bg-[var(--border-subtle)]" />
                   )}
                 </div>
               ))}
@@ -202,21 +201,21 @@ export const ProductPage = () => {
 
             {/* ── CTA Button (Sticky on Mobile, integrated on Desktop) ── */}
             <div className="sticky-bottom-bar">
-              <button
-                className="w-full rounded-xl py-4 text-sm font-semibold transition-opacity duration-150 hover:opacity-85 active:opacity-75"
+              <Button 
+                size="lg"
+                className="w-full rounded-xl py-6 text-base shadow-[0_4px_14px_0_rgba(0,0,0,0.12)] hover:opacity-90 active:opacity-75 transition-opacity"
                 style={{
                   backgroundColor: "var(--cta-bg)",
                   color: "var(--cta-text)",
-                  boxShadow: "0 4px 14px 0 rgba(0,0,0,0.12)",
                 }}
               >
                 Comprar ahora
-              </button>
+              </Button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
