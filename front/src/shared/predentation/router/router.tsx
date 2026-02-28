@@ -5,8 +5,15 @@ import { lazy, Suspense } from "react";
 import { DashboardLayout } from "../layouts/DashBoardLayout";
 import LoadingPage from "../../../components/loadings/LoadingPage";
 //aplicar lazy loading a las rutas del dashboard
-const ProductPage = lazy(
-  () => import("../../../modules/product/presentation/ProductPage"),
+const ProductPage = lazy(() =>
+  import("@/modules/product/presentation/ProductPage").then((module) => ({
+    default: module.ProductPage,
+  })),
+);
+const CheckoutPage = lazy(() =>
+  import("@/modules/checkout/presentation/CheckoutPage").then((module) => ({
+    default: module.CheckoutPage,
+  })),
 );
 
 export const router = createBrowserRouter([
@@ -28,6 +35,14 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<LoadingPage />}>
                 <ProductPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "checkout",
+            element: (
+              <Suspense fallback={<LoadingPage />}>
+                <CheckoutPage />
               </Suspense>
             ),
           },

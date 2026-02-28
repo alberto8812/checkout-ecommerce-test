@@ -6,7 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useGet } from "@/shared/predentation/queries/useGet";
 import { getProduct } from "../api/get_product";
 import { StarRating } from "@/components/ui/StarRating";
-import { goToStep, setProduct } from "@/shared/predentation/stores/slices/ui.slice";
+import {
+  goToStep,
+  setProduct,
+} from "@/shared/predentation/stores/slices/ui.slice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/shared/predentation/stores/redux.global.store";
 import { useNavigate } from "react-router-dom";
@@ -16,23 +19,22 @@ const trustBadges = [
   { icon: Lock, label: "Garantía 2 años" },
 ];
 
-
-
 /* ─── ProductPage ──────────────────────────────────────────────────────────── */
 export const ProductPage = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate();
-  const { data: products, isLoading, isError } = useGet(
-    ["products"],
-    getProduct
-  );
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const {
+    data: products,
+    isLoading,
+    isError,
+  } = useGet(["products"], getProduct);
   const product = products?.[0];
 
   const handleBuyNow = () => {
     if (product) {
       dispatch(setProduct(product));
       dispatch(goToStep(2));
-      navigate('/checkout');
+      navigate("/dashboard/checkout");
     }
   };
 
@@ -84,7 +86,9 @@ export const ProductPage = () => {
             </h1>
             <div className="shrink-0 text-right">
               <p className="num text-2xl font-bold leading-none tracking-[-0.03em] text-slate-950">
-                <span className="text-base font-semibold text-slate-400 mr-0.5">$</span>
+                <span className="text-base font-semibold text-slate-400 mr-0.5">
+                  $
+                </span>
                 {product.price.toFixed(2)}
               </p>
               <p className="mt-1 text-xs text-slate-400">COP</p>
@@ -116,7 +120,10 @@ export const ProductPage = () => {
             {/* ── Trust badges ── */}
             <div className="mb-5 flex flex-row items-center justify-around rounded-lg border border-slate-100 bg-white px-2 py-3.5">
               {trustBadges.map(({ icon: Icon, label }, index) => (
-                <div key={label} className="flex shrink-0 flex-row items-center">
+                <div
+                  key={label}
+                  className="flex shrink-0 flex-row items-center"
+                >
                   <div className="flex flex-col items-center gap-1.5 px-3.5 text-center">
                     <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50">
                       <Icon className="h-[1rem] w-[1rem] shrink-0 text-emerald-600" />
