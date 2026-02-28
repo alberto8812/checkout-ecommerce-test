@@ -16,6 +16,7 @@ interface EnvConfig {
 
 const ensSchema = joi.object({
     PORT: joi.number().required(),
+    DATABASE_URL: joi.string().uri().required(),
     DB_HOST: joi.string().required(),
     DB_PORT: joi.number().default(5432),
     DB_USERNAME: joi.string().required(),

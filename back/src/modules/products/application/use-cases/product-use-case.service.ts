@@ -22,6 +22,10 @@ export class ProductUseCaseService implements IProductUseCase {
     return this.productRepository.create(dto);
   }
 
+  findAll(): Promise<IProductRepositoryModel[]> {
+    return this.productRepository.findAll();
+  }
+
 
   findOne(id: string): Promise<IProductRepositoryModel | null> {
     return this.productRepository.findOne(id);

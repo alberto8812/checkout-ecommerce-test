@@ -24,6 +24,18 @@ export class ProductController {
     return this.productUseCaseService.create(createProductDto);
   }
 
+  @Endpoint({
+    method: 'GET',
+    summary: 'List products',
+    route: '',
+    responses: [
+      { status: 200, description: 'Products retrieved', type: Object, isArray: true },
+    ],
+  })
+  findAll() {
+    return this.productUseCaseService.findAll();
+  }
+
 
   @Endpoint({
     method: 'GET',
@@ -35,7 +47,7 @@ export class ProductController {
     ],
   })
   findOne(@Param('id') id: string) {
-
+    return this.productUseCaseService.findOne(id);
   }
 
   @Endpoint({
@@ -48,7 +60,7 @@ export class ProductController {
     ],
   })
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-
+    return this.productUseCaseService.update(id, updateProductDto);
   }
 
 }
