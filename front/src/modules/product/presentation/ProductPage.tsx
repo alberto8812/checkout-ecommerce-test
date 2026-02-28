@@ -1,4 +1,4 @@
-import { ShieldCheck, Star, Truck, Lock, Loader2 } from "lucide-react";
+import { ShieldCheck, Truck, Lock, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -6,7 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useGet } from "@/shared/predentation/queries/useGet";
 import { getProduct } from "../api/get_product";
 import { StarRating } from "@/components/ui/StarRating";
-
+import { goToStep, setProduct } from "@/shared/predentation/stores/slices/ui.slice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/shared/predentation/stores/redux.global.store";
+import { useNavigate } from "react-router-dom";
 const trustBadges = [
   { icon: ShieldCheck, label: "Pago seguro" },
   { icon: Truck, label: "Envío gratis" },
@@ -17,11 +20,21 @@ const trustBadges = [
 
 /* ─── ProductPage ──────────────────────────────────────────────────────────── */
 export const ProductPage = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
   const { data: products, isLoading, isError } = useGet(
-   [ "products"],
+    ["products"],
     getProduct
   );
   const product = products?.[0];
+
+  const handleBuyNow = () => {
+    if (product) {
+      dispatch(setProduct(product));
+      dispatch(goToStep(2));
+      navigate('/checkout');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -125,6 +138,7 @@ export const ProductPage = () => {
             {/* ── CTA Button ── */}
             <div className="sticky-bottom-bar">
               <Button
+                onClick={handleBuyNow}
                 size="lg"
                 className="w-full rounded-xl py-6 text-base font-semibold transition-all duration-200 
                            bg-slate-900 text-white hover:bg-slate-800 
@@ -142,5 +156,3 @@ export const ProductPage = () => {
     </Card>
   );
 };
-
-export default ProductPage;

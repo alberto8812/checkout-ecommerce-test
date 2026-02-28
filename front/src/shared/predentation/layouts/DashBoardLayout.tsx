@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/tooltip";
 
 const steps = [
-  { number: 1, label: "Producto", icon: Package },
-  { number: 2, label: "Datos", icon: User },
-  { number: 3, label: "Resumen", icon: FileText },
-  { number: 4, label: "Estado", icon: CheckCircle },
+  { number: 1, label: "Product", icon: Package },
+  { number: 2, label: "Data", icon: User },
+  { number: 3, label: "Summary", icon: FileText },
+  { number: 4, label: "Status", icon: CheckCircle },
 ];
 
 const currentStep = 1;
@@ -41,7 +41,7 @@ export const DashboardLayout = () => {
               </div>
 
               {/* Step wizard */}
-              <nav className="flex w-48 flex-row flex-nowrap items-center justify-between sm:w-64">
+              <nav className="flex w-48 flex-row flex-nowrap items-center justify-between sm:w-64 ">
                 {steps.map((step, index) => {
                   const isCompleted = step.number < currentStep;
                   const isCurrent = step.number === currentStep;
@@ -63,9 +63,9 @@ export const DashboardLayout = () => {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div
-                            className={`flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-sm transition-all duration-200 ${
+                            className={`flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center  transition-all duration-200 rounded-full ${
                               isActive
-                                ? "bg-[var(--text-primary)] text-white shadow-sm"
+                                ? "bg-[var(--text-green)] text-white shadow-sm"
                                 : "border border-[var(--border-default)] bg-[var(--surface-1)] text-[var(--text-muted)]"
                             } ${isCurrent ? "ring-2 ring-[var(--text-primary)]/20 ring-offset-1" : ""}`}
                           >
