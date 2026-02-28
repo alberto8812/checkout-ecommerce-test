@@ -1,28 +1,11 @@
-import { ShieldCheck, Star, Truck, Check, Lock } from "lucide-react";
+import { ShieldCheck, Star, Truck, Lock, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
+import { useGet } from "@/shared/predentation/queries/useGet";
+import { getProduct } from "../api/get_product";
 
-/* ─── Mock data ────────────────────────────────────────────────────────────── */
-const product = {
-  name: "Sony WH-1000XM5",
-  price: 349.99,
-  currency: "USD",
-  description:
-    "Audífonos inalámbricos premium con cancelación de ruido adaptativa, 30 horas de batería y audio Hi-Res. Diseño ultraligero y plegable con micrófono de alta calidad para llamadas cristalinas.",
-  image:
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80",
-  features: [
-    "Cancelación de ruido líder en la industria",
-    "30 horas de batería",
-    "Audio Hi-Res certificado",
-    "Conexión multipunto Bluetooth 5.3",
-    "Diseño plegable ultraligero (250g)",
-  ],
-  reviewCount: 2847,
-  rating: 4,
-};
 
 const trustBadges = [
   { icon: ShieldCheck, label: "Pago seguro" },
@@ -50,13 +33,37 @@ function StarRating({ rating, total = 5 }: { rating: number; total?: number }) {
 
 /* ─── ProductPage ──────────────────────────────────────────────────────────── */
 export const ProductPage = () => {
+  const { data: products, isLoading, isError } = useGet(
+   [ "products"],
+    getProduct
+  );
+  const product = products?.[0];
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full min-h-[400px] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+      </div>
+    );
+  }
+
+  if (isError || !product) {
+    return (
+      <div className="flex h-full min-h-[400px] items-center justify-center">
+        <p className="text-sm text-slate-500">
+          No se pudo cargar el producto. Intenta de nuevo.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <Card className="enterprise-card border-none shadow-none bg-transparent">
       <CardContent className="product-split p-0">
         {/* ── Left Column: Product Image ── */}
         <div className="relative mb-5 min-h-[320px] h-full overflow-hidden rounded-xl bg-slate-100 border border-slate-200/80 md:mb-0">
           <img
-            src={product.image}
+            src={`https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80`}
             alt={product.name}
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover"
@@ -83,16 +90,14 @@ export const ProductPage = () => {
                 <span className="text-base font-semibold text-slate-400 mr-0.5">$</span>
                 {product.price.toFixed(2)}
               </p>
-              <p className="mt-1 text-xs text-slate-400">{product.currency}</p>
+              <p className="mt-1 text-xs text-slate-400">COP</p>
             </div>
           </div>
 
           {/* ── Rating ── */}
           <div className="mb-4 flex flex-row items-center gap-2">
-            <StarRating rating={product.rating} />
-            <span className="text-sm text-slate-500">
-              ({product.reviewCount.toLocaleString()} reseñas)
-            </span>
+            <StarRating rating={4} />
+            <span className="text-sm text-slate-500">(2,847 reseñas)</span>
           </div>
 
           {/* ── Description ── */}
@@ -102,17 +107,13 @@ export const ProductPage = () => {
 
           <Separator className="mb-4 bg-slate-100" />
 
-          {/* ── Feature list ── */}
-          <ul className="mb-5 flex flex-col gap-2.5">
-            {product.features.map((feature) => (
-              <li key={feature} className="flex items-center gap-3 text-sm">
-                <span className="flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                  <Check className="h-3 w-3" strokeWidth={2.5} />
-                </span>
-                <span className="text-slate-600">{feature}</span>
-              </li>
-            ))}
-          </ul>
+          {/* ── Base fee info ── */}
+          <p className="mb-5 text-xs text-slate-400">
+            Tarifa base de transacción:{" "}
+            <span className="font-medium text-slate-600">
+              ${product.base_fee.toFixed(2)}
+            </span>
+          </p>
 
           <div className="mt-auto">
             {/* ── Trust badges ── */}
