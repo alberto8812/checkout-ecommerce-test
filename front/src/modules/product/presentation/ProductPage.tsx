@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 
-/* ─── Mock data ──────────────────────────────────────────────────────────── */
+/* ─── Mock data ────────────────────────────────────────────────────────────── */
 const product = {
   name: "Sony WH-1000XM5",
   price: 349.99,
@@ -30,184 +30,123 @@ const trustBadges = [
   { icon: Lock, label: "Garantía 2 años" },
 ];
 
-/* ─── Star rating ────────────────────────────────────────────────────────── */
+/* ─── Star rating ──────────────────────────────────────────────────────────── */
 function StarRating({ rating, total = 5 }: { rating: number; total?: number }) {
   return (
-    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "2px" }}>
+    <div className="flex flex-row items-center gap-[2px]">
       {Array.from({ length: total }).map((_, i) => (
         <Star
           key={i}
-          className="h-4 w-4"
-          style={{
-            flexShrink: 0,
-            fill: i < rating ? "var(--amber)" : "var(--border-default)",
-            color: i < rating ? "var(--amber)" : "var(--border-default)",
-          }}
+          className={`h-4 w-4 shrink-0 ${
+            i < rating
+              ? "fill-amber-400 text-amber-400"
+              : "fill-slate-200 text-slate-200"
+          }`}
         />
       ))}
     </div>
   );
 }
 
-/* ─── ProductPage ─────────────────────────────────────────────────────────── */
+/* ─── ProductPage ──────────────────────────────────────────────────────────── */
 export const ProductPage = () => {
   return (
     <Card className="enterprise-card border-none shadow-none bg-transparent">
       <CardContent className="product-split p-0">
         {/* ── Left Column: Product Image ── */}
-        <div
-          className="relative overflow-hidden mb-5 md:mb-0"
-          style={{
-            borderRadius: "var(--radius-xl)",
-            backgroundColor: "var(--surface-1)",
-            border: "1px solid var(--border-subtle)",
-            minHeight: "320px", // Backup for mobile
-            height: "100%", // Force stretch to match the right column height
-          }}
-        >
+        <div className="relative mb-5 min-h-[320px] h-full overflow-hidden rounded-xl bg-slate-100 border border-slate-200/80 md:mb-0">
           <img
             src={product.image}
             alt={product.name}
             loading="lazy"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
 
-          {/* Disponible badge overlay */}
-          <Badge 
-            className="absolute right-4 top-4 z-10 text-xs py-1"
-            style={{ backgroundColor: "var(--green-500)", color: "#fff" }}
-          >
+          {/* Bottom gradient for depth */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/20 to-transparent" />
+
+          {/* Disponible badge — frosted glass */}
+          <Badge className="absolute right-4 top-4 z-10 border border-white/20 bg-emerald-500/90 py-1 text-xs text-white backdrop-blur-sm hover:bg-emerald-500/90">
             Disponible
           </Badge>
         </div>
 
         {/* ── Right Column: Product Details & Actions ── */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div className="flex flex-col">
           {/* ── Name + Price row ── */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: "1rem",
-              marginBottom: "0.375rem",
-            }}
-          >
-            <h1
-              style={{ color: "var(--text-primary)", fontSize: "1.2rem", fontWeight: 600, lineHeight: 1.3 }}
-            >
+          <div className="mb-1.5 flex flex-row items-start justify-between gap-4">
+            <h1 className="text-[1.25rem] font-semibold leading-[1.3] tracking-[-0.025em] text-slate-950">
               {product.name}
             </h1>
-            <div style={{ flexShrink: 0, textAlign: "right" }}>
-              <p
-                className="num"
-                style={{ color: "var(--text-primary)", fontSize: "1.5rem", fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em" }}
-              >
-                ${product.price.toFixed(2)}
+            <div className="shrink-0 text-right">
+              <p className="num text-2xl font-bold leading-none tracking-[-0.03em] text-slate-950">
+                <span className="text-base font-semibold text-slate-400 mr-0.5">$</span>
+                {product.price.toFixed(2)}
               </p>
-              <p
-                style={{ color: "var(--text-muted)", fontSize: "0.75rem", marginTop: "0.25rem" }}
-              >
-                {product.currency}
-              </p>
+              <p className="mt-1 text-xs text-slate-400">{product.currency}</p>
             </div>
           </div>
 
           {/* ── Rating ── */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "1rem",
-            }}
-          >
+          <div className="mb-4 flex flex-row items-center gap-2">
             <StarRating rating={product.rating} />
-            <span style={{ fontSize: "0.875rem", color: "var(--text-tertiary)" }}>
+            <span className="text-sm text-slate-500">
               ({product.reviewCount.toLocaleString()} reseñas)
             </span>
           </div>
 
           {/* ── Description ── */}
-          <p
-            className="mb-5 text-sm leading-relaxed"
-            style={{ color: "var(--text-secondary)" }}
-          >
+          <p className="mb-4 text-sm leading-relaxed text-slate-600">
             {product.description}
           </p>
+
+          <Separator className="mb-4 bg-slate-100" />
 
           {/* ── Feature list ── */}
           <ul className="mb-5 flex flex-col gap-2.5">
             {product.features.map((feature) => (
               <li key={feature} className="flex items-center gap-3 text-sm">
-                <span
-                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-                  style={{
-                    backgroundColor: "var(--green-bg)",
-                    color: "var(--green-500)",
-                  }}
-                >
+                <span className="flex h-[1.375rem] w-[1.375rem] shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
                   <Check className="h-3 w-3" strokeWidth={2.5} />
                 </span>
-                <span style={{ color: "var(--text-secondary)" }}>{feature}</span>
+                <span className="text-slate-600">{feature}</span>
               </li>
             ))}
           </ul>
 
-          <div style={{ marginTop: "auto" }}>
+          <div className="mt-auto">
             {/* ── Trust badges ── */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-around",
-                marginBottom: "1.25rem",
-                padding: "0.875rem 0.5rem",
-                borderRadius: "var(--radius-md)",
-                border: "1px solid var(--border-subtle)",
-                backgroundColor: "var(--surface-0)",
-              }}
-            >
+            <div className="mb-5 flex flex-row items-center justify-around rounded-lg border border-slate-100 bg-white px-2 py-3.5">
               {trustBadges.map(({ icon: Icon, label }, index) => (
-                <div key={label} style={{ display: "flex", flexDirection: "row", alignItems: "center", flexShrink: 0 }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: "0.375rem",
-                      padding: "0 0.875rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    <Icon
-                      style={{ height: "1.125rem", width: "1.125rem", color: "var(--green-500)", flexShrink: 0 }}
-                    />
-                    <span
-                      style={{ color: "var(--text-secondary)", fontSize: "0.7rem", whiteSpace: "nowrap" }}
-                    >
+                <div key={label} className="flex shrink-0 flex-row items-center">
+                  <div className="flex flex-col items-center gap-1.5 px-3.5 text-center">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50">
+                      <Icon className="h-[1rem] w-[1rem] shrink-0 text-emerald-600" />
+                    </div>
+                    <span className="whitespace-nowrap text-[0.7rem] text-slate-500">
                       {label}
                     </span>
                   </div>
                   {index < trustBadges.length - 1 && (
-                    <Separator orientation="vertical" className="h-8 mx-2 bg-[var(--border-subtle)]" />
+                    <Separator
+                      orientation="vertical"
+                      className="mx-2 h-8 bg-slate-100"
+                    />
                   )}
                 </div>
               ))}
             </div>
 
-            {/* ── CTA Button (Sticky on Mobile, integrated on Desktop) ── */}
+            {/* ── CTA Button ── */}
             <div className="sticky-bottom-bar">
-              <Button 
+              <Button
                 size="lg"
-                className="w-full rounded-xl py-6 text-base shadow-[0_4px_14px_0_rgba(0,0,0,0.12)] hover:opacity-90 active:opacity-75 transition-opacity"
-                style={{
-                  backgroundColor: "var(--cta-bg)",
-                  color: "var(--cta-text)",
-                }}
+                className="w-full rounded-xl py-6 text-base font-semibold transition-all duration-200 
+                           bg-slate-900 text-white hover:bg-slate-800 
+                           hover:-translate-y-px hover:shadow-[0_6px_20px_0_rgba(0,0,0,0.18)]
+                           active:translate-y-0 active:opacity-80
+                           focus-visible:ring-2 focus-visible:ring-slate-900/30 focus-visible:ring-offset-2
+                           shadow-[0_4px_14px_0_rgba(0,0,0,0.12)]"
               >
                 Comprar ahora
               </Button>
