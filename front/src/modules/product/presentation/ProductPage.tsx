@@ -51,35 +51,33 @@ export const ProductPage = () => {
     <div className="enterprise-card">
       <div className="product-split">
         {/* ── Left Column: Product Image ── */}
-        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-          <div
-            className="relative overflow-hidden mb-5 md:mb-0"
+        <div
+          className="relative overflow-hidden mb-5 md:mb-0"
+          style={{
+            borderRadius: "var(--radius-xl)",
+            backgroundColor: "var(--surface-1)",
+            border: "1px solid var(--border-subtle)",
+            minHeight: "320px", // Backup for mobile
+            height: "100%", // Force stretch to match the right column height
+          }}
+        >
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+
+          {/* Disponible badge overlay */}
+          <span
+            className="absolute right-4 top-4 rounded-full px-3 py-1 text-xs font-semibold z-10"
             style={{
-              borderRadius: "var(--radius-xl)",
-              backgroundColor: "var(--surface-1)",
-              border: "1px solid var(--border-subtle)",
-              flexGrow: 1,
-              minHeight: "320px",
+              backgroundColor: "var(--green-500)",
+              color: "#fff",
             }}
           >
-            <img
-              src={product.image}
-              alt={product.name}
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-
-            {/* Disponible badge */}
-            <span
-              className="absolute right-4 top-4 rounded-full px-3 py-1 text-xs font-semibold"
-              style={{
-                backgroundColor: "var(--green-500)",
-                color: "#fff",
-              }}
-            >
-              Disponible
-            </span>
-          </div>
+            Disponible
+          </span>
         </div>
 
         {/* ── Right Column: Product Details & Actions ── */}

@@ -65,6 +65,7 @@ export const DashboardLayout = () => {
                 flexWrap: "nowrap",
                 width: "200px",
                 justifyContent: "space-between",
+                /* Removed overflow: hidden so tooltips can bleed out */
               }}
             >
               {steps.map((step, index) => {
@@ -90,7 +91,7 @@ export const DashboardLayout = () => {
 
                     {/* Step Icon with Tooltip */}
                     <div
-                      title={step.label}
+                      className="tooltip-container"
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -102,11 +103,12 @@ export const DashboardLayout = () => {
                         border: isActive ? "2px solid var(--green-500)" : "2px solid var(--border-default)",
                         color: isActive ? "var(--green-500)" : "var(--border-default)",
                         transition: "all 0.3s ease",
-                        cursor: "help",
+                        cursor: "pointer",
                         flexShrink: 0,
                       }}
                     >
                       <Icon size={isActive ? 16 : 14} strokeWidth={isActive ? 2.5 : 2} />
+                      <span className="tooltip-text">{step.label}</span>
                     </div>
                   </React.Fragment>
                 );
