@@ -1,12 +1,16 @@
 import * as yup from "yup";
 import type { AnyObjectSchema } from "yup";
+import { validateLuhn } from "@/shared/utils/payment";
 
 export const checkoutSchema: AnyObjectSchema = yup
     .object({
         cardNumber: yup
             .string()
             .required("Ingresa el numero de tu tarjeta")
-            .matches(/^(\d{4}\s?){4}$/u, "Formato invalido"),
+            .matches(/^(\d{4}\s?){4}$/u, "Formato invalido")
+            .test("luhn", "La tarjeta no es valida", (value) =>
+                value ? validateLuhn(value) : false,
+            ),
         cardHolder: yup
             .string()
             .required("Ingresa el nombre como aparece en la tarjeta"),
