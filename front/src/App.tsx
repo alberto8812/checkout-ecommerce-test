@@ -1,7 +1,7 @@
 import { RouterProvider } from "react-router-dom";
-import { router } from "./shared/router/router";
+import { router } from "./shared/predentation/router/router";
 import { Provider } from "react-redux";
-import { store } from "./shared/stores/redux.global.store";
+import { store } from "./shared/predentation/stores/redux.global.store";
 function App() {
   return (
     <>
