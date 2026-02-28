@@ -84,7 +84,7 @@ export function validateLuhn(number: string): boolean {
 export const processPayment = createAsyncThunk(
     "checkout/processPayment",
     async (
-        payload: { card: CardInfo; shipping: ShippingInfo; product: Product },
+        _payload: { card: CardInfo; shipping: ShippingInfo; product: Product },
         { rejectWithValue }
     ) => {
         // Simulate tokenization — sensitive data never hits Redux

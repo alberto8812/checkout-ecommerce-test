@@ -22,6 +22,8 @@
   /* slate-100 */
   --surface-2: #e2e8f0;
   /* slate-200 */
+  --control-bg: #f7f4ec;
+  /* warm paper tint for inputs */
 
   /* ── Text hierarchy */
   --text-primary: #020617;
@@ -76,7 +78,6 @@
 
 /* ─── Base ───────────────────────────────────────────────────────────────── */
 @layer base {
-
   *,
   *::before,
   *::after {
@@ -92,7 +93,10 @@
     background-color: var(--canvas);
     color: var(--text-primary);
     font-family: var(--font-sans);
-    font-feature-settings: "cv01" on, "cv03" on, "cv11" on;
+    font-feature-settings:
+      "cv01" on,
+      "cv03" on,
+      "cv11" on;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100dvh;
@@ -115,7 +119,6 @@
 
 /* ─── Utilities ──────────────────────────────────────────────────────────── */
 @layer utilities {
-
   /* Monospaced tabular numbers for prices / counts */
   .num {
     font-family: var(--font-mono);

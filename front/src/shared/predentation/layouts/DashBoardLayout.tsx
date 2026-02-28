@@ -24,8 +24,6 @@ const steps = [
   { number: 4, label: "Status", icon: CheckCircle },
 ];
 
-const currentStep = 1;
-
 export const DashboardLayout = () => {
   const step = useAppSelector((s) => s.ui.step);
   return (
