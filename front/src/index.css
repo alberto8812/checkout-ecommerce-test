@@ -1,90 +1,260 @@
+@import "@fontsource/geist/index.css";
+@import "@fontsource/geist-mono/index.css";
 @import "tailwindcss";
-@tailwind utilities;
+@import "tw-animate-css";
+
+/* ─── SecurePay Checkout — Light Cream Design System ──────────────────────
+   Color world: warm sand paper · cream parchment · subtle olive shadow
+   Reference: single-column centered checkout flow, Stripe-like simplicity
+   Depth: borders-only, no dramatic shadows
+   ──────────────────────────────────────────────────────────────────────── */
 
 :root {
-  --accent: #5a3696;
-  --accent-light: #ede8f5;
-  --accent-heart: #48bb78;
-  --text-primary: #1a1a2e;
-  --text-secondary: #6b7280;
-  --text-muted: #9ca3af;
-  --border-light: #f0f0f0;
-  --surface: #ffffff;
-  --surface-sidebar: #ffffff;
-  --surface-hover: #f9f8fc;
+  /* ── Canvas & surface scale */
+  --canvas: oklch(0.96 0.007 80);
+  /* warm off-white / parchment */
+  --surface-0: oklch(0.99 0.004 80);
+  /* card white */
+  --surface-1: oklch(0.97 0.005 80);
+  /* input, slight tint */
+  --surface-2: oklch(0.94 0.006 80);
+  /* divider bg */
+
+  /* ── Text hierarchy */
+  --text-primary: oklch(0.14 0.01 60);
+  /* near-black, warm */
+  --text-secondary: oklch(0.35 0.01 60);
+  /* medium gray warm */
+  --text-tertiary: oklch(0.52 0.01 60);
+  /* metadata */
+  --text-muted: oklch(0.66 0.008 60);
+  /* labels, hints */
+
+  /* ── Border progression */
+  --border-subtle: oklch(0.88 0.007 80 / 0.9);
+  --border-default: oklch(0.82 0.007 80);
+  --border-strong: oklch(0.72 0.007 80);
+
+  /* ── Brand: action green (from badges) */
+  --green-500: oklch(0.53 0.16 155);
+  --green-400: oklch(0.63 0.16 155);
+  --green-bg: oklch(0.53 0.16 155 / 0.1);
+  --green-border: oklch(0.53 0.16 155 / 0.25);
+
+  /* ── CTA: pure black */
+  --cta-bg: oklch(0.14 0.01 60);
+  --cta-hover: oklch(0.22 0.01 60);
+  --cta-text: oklch(0.98 0 0);
+
+  /* ── Amber (star rating) */
+  --amber: oklch(0.75 0.17 74);
+
+  /* ── Control tokens */
+  --control-bg: var(--surface-1);
+  --control-border: var(--border-default);
+
+  /* ── Typography */
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  /* ── Border radius */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+
+  /* ── Tailwind compat */
+  --background: var(--canvas);
+  --foreground: var(--text-primary);
+  --card: var(--surface-0);
+  --card-foreground: var(--text-primary);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--text-muted);
+  --border: var(--border-default);
+  --input: var(--surface-1);
+  --ring: var(--green-500);
+  --primary: var(--cta-bg);
+  --primary-foreground: var(--cta-text);
+  --radius: var(--radius-md);
 }
 
-body {
-  @apply bg-white text-gray-800;
-  font-family:
-    "Inter",
-    system-ui,
-    -apple-system,
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@theme inline {
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
 }
 
-h1 {
-  @apply text-xl font-bold;
-  color: var(--text-primary);
-}
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+@layer base {
 
-h2 {
-  @apply text-lg font-semibold;
-  color: var(--text-primary);
-}
-
-hr {
-  border: none;
-  border-top: 1px solid var(--border-light);
-  margin: 0;
-}
-
-input:not(.swal2-input)[type="text"],
-input:not(.swal2-input)[type="password"],
-input:not(.swal2-input)[type="email"],
-input:not(.swal2-input)[type="number"],
-input:not(.swal2-input)[type="date"],
-input:not(.swal2-input)[type="time"],
-input[type="search"] {
-  @apply w-full border rounded-lg py-2.5 px-3 text-sm focus:outline-none;
-  border-color: var(--border-light);
-  color: var(--text-primary);
-}
-
-input[type="search"]::placeholder {
-  color: var(--text-muted);
-}
-
-/* Remove aggressive global button styles */
-button {
-  @apply transition-colors duration-150;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 4px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
-  100% {
-    background-position: -200% 0;
+
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv01" on, "cv03" on, "cv11" on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100dvh;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: 3px;
+  }
+}
+
+/* ─── Utilities ──────────────────────────────────────────────────────────── */
+@layer utilities {
+
+  /* monospace numbers */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  /* step indicator active */
+  .step-active {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .step-inactive {
+    color: var(--text-muted);
+  }
+}
+
+/* ─── Checkout layout ────────────────────────────────────────────────────── */
+.checkout-shell {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  background-color: var(--canvas);
+}
+
+/* Mobile-first: container is unboxed, just content with padding */
+.checkout-container {
+  width: 100%;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
+}
+
+/* Desktop enterprise card wrapper */
+.enterprise-card {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  position: relative;
+  border-radius: 0;
+  background-color: var(--canvas);
+  /* Match canvas on mobile */
+  padding-bottom: 6rem;
+  /* space for sticky bar on mobile */
+}
+
+/* Responsive grid for product view */
+.product-split {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Sticky CTA Bar optimized for mobile conversions */
+.sticky-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: color-mix(in srgb, var(--surface-0) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-subtle);
+  z-index: 40;
+}
+
+@media (min-width: 640px) {
+  .checkout-container {
+    padding: 0 1.5rem;
+  }
+}
+
+/* ── Desktop UI Polish: turn wrapper into a floating checkout modal ── */
+@media (min-width: 768px) {
+  .enterprise-card {
+    max-width: 960px;
+    /* Wider for 2 columns */
+    background-color: var(--surface-0);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.04), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
+    padding: 2.5rem;
+    padding-bottom: 2.5rem;
+    /* No sticky bar blank space needed on desktop */
+  }
+
+  .product-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: stretch;
+    /* Stretch to allow image to fill vertical space */
+  }
+
+  .sticky-bottom-bar {
+    position: static;
+    background-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-top: none;
+    padding: 0;
+    margin-top: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .enterprise-card {
+    max-width: 1024px;
+    padding: 3rem;
+  }
+
+  .product-split {
+    grid-template-columns: 1.15fr 1fr;
+    /* Image column slightly larger */
+    gap: 4rem;
   }
 }
