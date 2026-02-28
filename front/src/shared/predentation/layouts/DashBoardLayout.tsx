@@ -6,7 +6,7 @@ import { ErrorBoundary } from "../handkeErrors/GlobalErrorBoundary";
 export const DashboardLayout = () => {
   return (
     <ErrorBoundary
-      fallback={(error, errorInfo) => {
+      fallback={(_error, _errorInfo) => {
         return <PageError />;
       }}
     >

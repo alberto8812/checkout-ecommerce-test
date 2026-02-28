@@ -1,7 +1,6 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { PageError } from "../handkeErrors/PageError";
 import { Root } from "./Root";
-
 import { lazy, Suspense } from "react";
 import { DashboardLayout } from "../layouts/DashBoardLayout";
 import LoadingPage from "../../../components/loadings/LoadingPage";
@@ -21,6 +20,10 @@ export const router = createBrowserRouter([
         element: <DashboardLayout />,
         children: [
           {
+            index: true,
+            element: <Navigate to="product" replace />,
+          },
+          {
             path: "product",
             element: (
               <Suspense fallback={<LoadingPage />}>
@@ -36,7 +39,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "*",
-        element: <DashboardLayout />,
+        element: <PageError />,
       },
     ],
   },
