@@ -23,24 +23,25 @@ export const TextField = ({
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <div className={cn("flex flex-col gap-1", containerClass)}>
+        <div className={cn("flex flex-col gap-0.5", containerClass)}>
           <label
             htmlFor={name}
-            className="text-[0.75rem] font-medium uppercase tracking-[0.08em] text-[var(--text-muted)]"
+            className="text-[0.65rem] font-medium uppercase tracking-[0.08em] text-[var(--text-muted)]"
           >
             {label}
           </label>
-          <input
-            id={name}
-            {...field}
-            {...inputProps}
-            value={field.value ?? ""}
-            className={cn(
-              "h-12 w-full rounded-2xl border border-black/10 bg-[var(--control-bg)] px-4 text-[0.95rem] text-[var(--text-primary)] outline-none transition focus:border-black focus:bg-white",
-              fieldState.error && "border-[#dd5a5a]",
-              inputProps.className,
-            )}
-          />
+            <input
+              id={name}
+              {...field}
+              {...inputProps}
+              value={field.value ?? ""}
+              className={cn(
+                "h-8 w-full rounded-lg border border-black/10 bg-[var(--control-bg)] px-3 text-[0.8rem] text-[var(--text-primary)] outline-none transition-all duration-200 placeholder:text-[var(--text-muted)] focus:border-slate-900 focus:bg-white focus:ring-2 focus:ring-slate-900/10 focus:ring-offset-1",
+                fieldState.error &&
+                  "border-red-400 bg-red-50/40 focus:border-red-500 focus:ring-red-500/15",
+                inputProps.className,
+              )}
+            />
           {hint && (
             <p className="text-xs text-[var(--text-tertiary)]">{hint}</p>
           )}

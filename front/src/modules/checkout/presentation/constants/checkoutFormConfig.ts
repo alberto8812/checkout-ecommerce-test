@@ -1,5 +1,7 @@
 import type { InputHTMLAttributes } from "react";
 import type { AutoCompleteOption } from "@/components/forms";
+import type { LucideIcon } from "lucide-react";
+import { CreditCard, Package } from "lucide-react";
 import { cities, countries } from "../constants/locationData";
 
 export type CheckoutSection = "payment" | "shipping";
@@ -132,9 +134,9 @@ export const checkoutFields: CheckoutFieldConfig[] = [
     },
 ];
 
-export const checkoutSections: { id: CheckoutSection; title: string; icon: string }[] = [
-    { id: "payment", title: "Datos de la tarjeta", icon: "💳" },
-    { id: "shipping", title: "Datos de envio", icon: "📦" },
+export const checkoutSections: { id: CheckoutSection; title: string; icon: LucideIcon }[] = [
+    { id: "payment", title: "Datos de la tarjeta", icon: CreditCard },
+    { id: "shipping", title: "Datos de envío", icon: Package },
 ];
 
 export const defaultValues = checkoutFields.reduce<CheckoutFormValues>((acc, field) => {

@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { AutocompleteField, TextField } from "@/components/forms";
 import {
   checkoutFields,
@@ -13,14 +14,7 @@ import {
   withCheckoutForm,
 } from "./hoc/withCheckoutForm";
 import { cn } from "@/lib/utils";
-
-const product = {
-  name: "Sony WH-1000XM5",
-  price: 349.99,
-  quantity: 1,
-  image:
-    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80",
-};
+import { useAppSelector } from "@/shared/predentation/stores/hooks";
 
 type CheckoutPageProps = WithCheckoutFormInjectedProps;
 
@@ -30,6 +24,7 @@ const CheckoutPageBase = ({
   isSubmitting,
 }: CheckoutPageProps) => {
   const navigate = useNavigate();
+  const product = useAppSelector((s) => s.ui.product);
 
   const groupedFields = useMemo(() => {
     return checkoutSections.map((section) => ({
@@ -39,87 +34,120 @@ const CheckoutPageBase = ({
   }, [fields]);
 
   return (
-    <section className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:py-14">
+    <section className="mx-auto w-full max-w-5xl px-4 sm:px-6">
+      {/* ── Back link ── */}
       <button
         type="button"
         onClick={() => navigate("/dashboard/product")}
-        className="group inline-flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)] transition hover:text-[var(--text-primary)]"
+        className="mb-2 inline-flex items-center gap-1 self-start text-[0.7rem] font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
       >
-        <span className="rounded-full bg-black/5 px-2 py-1 text-xs font-semibold text-black/70">
-          ←
-        </span>
-        Volver al producto
+        <ArrowLeft size={11} strokeWidth={2.5} />
+        Volver
       </button>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[0.75fr,1fr]">
-        <article className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="h-16 w-16 overflow-hidden rounded-2xl border border-black/5">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="flex flex-1 flex-col">
-              <p className="text-sm uppercase tracking-[0.08em] text-[var(--text-muted)]">
-                Resumen
-              </p>
-              <h2 className="text-lg font-semibold text-[var(--text-primary)]">
-                {product.name}
-              </h2>
-              <p className="text-sm text-[var(--text-tertiary)]">
-                Cantidad: {product.quantity}
-              </p>
-            </div>
-            <p className="num text-xl font-semibold">
-              ${product.price.toFixed(2)}
-            </p>
-          </div>
-          <div className="mt-6 space-y-3 text-sm text-[var(--text-secondary)]">
-            <div className="flex items-center justify-between">
-              <span>Subtotal</span>
-              <span className="num">${product.price.toFixed(2)}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Envio express</span>
-              <span className="num">$12.00</span>
-            </div>
-            <div className="flex items-center justify-between font-semibold text-[var(--text-primary)]">
-              <span>Total</span>
-              <span className="num">${(product.price + 12).toFixed(2)}</span>
-            </div>
-          </div>
-        </article>
-
-        <article className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-          <form onSubmit={onSubmit} className="space-y-8">
-            {groupedFields.map((section) => (
-              <div key={section.id}>
-                <div className="flex items-center gap-2 text-[var(--text-secondary)]">
-                  <span className="text-lg">{section.icon}</span>
-                  <p className="text-sm font-semibold uppercase tracking-[0.08em]">
-                    {section.title}
+      <form onSubmit={onSubmit}>
+        <div className="grid gap-3 sm:grid-cols-5">
+          {/* ══════════════ Left column: Order Summary ══════════════ */}
+          <div className="sm:col-span-2 sm:self-start">
+            <article className="rounded-xl border border-black/5 bg-white p-3 shadow-sm">
+              {/* Product row */}
+              <div className="flex items-center gap-2.5">
+                <div className="h-9 w-9 overflow-hidden rounded-lg border border-black/5 bg-slate-50">
+                  <img
+                    src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80"
+                    alt={product.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col">
+                  <h2 className="text-[0.75rem] font-semibold leading-tight text-[var(--text-primary)]">
+                    {product.name}
+                  </h2>
+                  <p className="text-[0.55rem] text-[var(--text-muted)]">
+                    Qty: 1
                   </p>
                 </div>
-                <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-                  {section.fields.map((field) => (
-                    <DynamicField key={field.name} field={field} />
-                  ))}
+                <p className="num text-xs font-semibold text-[var(--text-primary)]">
+                  ${product.price.toFixed(2)}
+                </p>
+              </div>
+
+              <hr className="my-2 border-slate-100" />
+
+              {/* Line items */}
+              <div className="space-y-0.5 text-[0.65rem] text-[var(--text-secondary)]">
+                <div className="flex items-center justify-between">
+                  <span>Subtotal</span>
+                  <span className="num">${product.price.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Envío</span>
+                  <span className="num">$12.00</span>
                 </div>
               </div>
-            ))}
 
+              <hr className="my-2 border-slate-100" />
+
+              {/* Total */}
+              <div className="flex items-center justify-between text-xs font-semibold text-[var(--text-primary)]">
+                <span>Total</span>
+                <span className="num">
+                  ${(product.price + 12).toFixed(2)}
+                </span>
+              </div>
+
+              {/* Security badge */}
+              <div className="mt-2 flex items-center justify-center gap-1 rounded-md bg-emerald-50/60 py-1 text-[0.5rem] font-medium uppercase tracking-wider text-emerald-700">
+                <ShieldCheck size={9} strokeWidth={2.5} />
+                Pago seguro
+              </div>
+            </article>
+          </div>
+
+          {/* ══════════════ Right column: Form sections ══════════════ */}
+          <div className="flex flex-col gap-3 sm:col-span-3">
+            {groupedFields.map((section) => {
+              const Icon = section.icon;
+              return (
+                <article
+                  key={section.id}
+                  className="rounded-xl border border-black/5 bg-white p-3 shadow-sm"
+                >
+                  <div className="mb-2 flex items-center gap-1.5 text-[var(--text-secondary)]">
+                    <div className="flex h-5 w-5 items-center justify-center rounded bg-slate-100">
+                      <Icon size={11} strokeWidth={2} />
+                    </div>
+                    <p className="text-[0.6rem] font-semibold uppercase tracking-[0.08em]">
+                      {section.title}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {section.fields.map((field) => (
+                      <DynamicField key={field.name} field={field} />
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
+
+            {/* ── Submit CTA ── */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex w-full items-center justify-center gap-2 rounded-3xl bg-black px-6 py-4 text-base font-semibold text-white transition hover:bg-black/90 disabled:cursor-not-allowed disabled:bg-black/40"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_0_rgba(0,0,0,0.12)] transition-all duration-200 hover:-translate-y-px hover:bg-slate-800 hover:shadow-[0_6px_20px_0_rgba(0,0,0,0.18)] active:translate-y-0 active:opacity-80 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none"
             >
-              {isSubmitting ? "Procesando..." : "Revisar pedido"}
+              {isSubmitting ? (
+                <>
+                  <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Procesando…
+                </>
+              ) : (
+                "Revisar pedido"
+              )}
             </button>
-          </form>
-        </article>
-      </div>
+          </div>
+        </div>
+      </form>
     </section>
   );
 };

@@ -100,7 +100,7 @@ export const DashboardLayout = () => {
         </header>
 
         {/* ── Main content ── */}
-        <main className="flex w-full flex-1 justify-center px-4 py-8 sm:px-6 md:py-12">
+        <main className="flex w-full flex-1 justify-center px-4 py-4 sm:px-6 md:py-6">
           <Outlet />
         </main>
 
