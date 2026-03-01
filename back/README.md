@@ -40,16 +40,25 @@ pnpm install
 Crea un archivo `.env` en la raíz del proyecto (o usa `.env.template` como referencia):
 
 ```env
-# Configuración de Base de Datos
-DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/base_datos"
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=usuario
-DB_PASSWORD=contraseña
-DB_NAME=base_datos
-
-# Configuración de Servidor
+# Servidor
 PORT=3000
+APP_URL=http://localhost:3000
+
+# Base de datos
+DATABASE_URL=postgresql://ecomerce:123456@localhost:5433/Ecomerce
+DB_HOST=localhost
+DB_PORT=5433
+DB_USERNAME=ecomerce
+DB_PASSWORD=123456
+DB_NAME=Ecomerce
+
+# Wompi (pasarela de pagos)
+WOMPI_BASE_URL=https://sandbox.wompi.co/v1
+WOMPI_PUBLIC_KEY=pub_test_...
+WOMPI_PRIVATE_KEY=prv_test_...
+WOMPI_EVENTS_KEY=test_events_...
+WOMPI_INTEGRITY_KEY=test_integrity_...
+WOMPI_ACCEPTANCE_TTL_MIN=10
 ```
 
 ### 4. Configurar la base de datos
@@ -133,18 +142,22 @@ pnpm format
 
 ```
 src/
-├── config/              # Configuración de la aplicación
-├── modules/             # Módulos de negocio
-│   └── products/        # Módulo de productos
-│       ├── application/ # Casos de uso y DTOs
-│       ├── domain/      # Modelos de dominio
-│       └── infrastructure/ # Controladores y repositorios
-├── shared/              # Código compartido
-│   ├── database/        # Gestión de base de datos
-│   ├── decorators/      # Decoradores personalizados
-│   └── exceptions/      # Excepciones personalizadas
-├── app.module.ts        # Módulo raíz
-└── main.ts              # Punto de entrada
+├── config/                    # Validación de variables de entorno (Joi)
+├── modules/
+│   ├── products/               # Módulo de productos
+│   │   ├── domain/             # Interface del repositorio + modelo
+│   │   ├── application/        # Casos de uso + DTOs
+│   │   └── infrastructure/     # Controller + Repositorio Prisma
+│   └── payments/               # Módulo de pagos (Wompi)
+│       ├── domain/             # Interface del repositorio
+│       ├── application/        # Casos de uso + DTOs (tarjeta, envío, webhook)
+│       └── infrastructure/     # Controller + Webhook controller + WompiHttpService
+├── shared/
+│   ├── database/               # PrismaManager (conexión a PostgreSQL)
+│   ├── decorators/             # @Endpoint — decorador unificado Swagger + métodos HTTP
+│   └── exceptions/             # Formato estándar de respuestas de error
+├── app.module.ts
+└── main.ts
 ```
 
 ## 📊 Modelos de Base de Datos
@@ -201,6 +214,26 @@ Una vez que el servidor está corriendo, puedes acceder a la documentación inte
 ```
 http://localhost:3000/api
 ```
+
+### Endpoints principales
+
+#### Productos — `/products`
+
+| Método | Ruta           | Descripción                  |
+|--------|----------------|------------------------------|
+| GET    | /products      | Listar todos los productos   |
+| GET    | /products/:id  | Obtener producto por ID      |
+| POST   | /products      | Crear producto               |
+| PATCH  | /products/:id  | Actualizar producto          |
+| DELETE | /products/:id  | Eliminar producto            |
+
+#### Pagos — `/payments`
+
+| Método | Ruta                            | Descripción                         |
+|--------|---------------------------------|-------------------------------------|
+| POST   | /payments/card                  | Crear pago con tarjeta vía Wompi    |
+| GET    | /payments/status/:wompiTxId     | Consultar estado de transacción     |
+| POST   | /payments/webhook               | Recibir eventos de Wompi (webhook)  |
 
 ## 🤝 Migraciones de Base de Datos
 
@@ -281,14 +314,24 @@ pnpm exec prisma migrate reset --force
 pnpm exec prisma generate
 ```
 
+## � Docker — Base de datos
+
+```bash
+# Levantar PostgreSQL en puerto 5433
+docker-compose up -d
+
+# Detener
+docker-compose down
+```
+
+Los datos persisten en un volumen Docker (`postgres_data`).
+
+---
+
 ## 📄 Licencia
 
 Este proyecto está bajo la licencia UNLICENSED.
 
-## 👤 Autor
-
-Proyecto desarrollado con NestJS y Prisma.
-
 ---
 
-**Nota**: Asegúrate de configurar correctamente las variables de entorno antes de ejecutar el proyecto.
+**Nota**: Configura las variables de entorno antes de ejecutar. Las claves de Wompi las obtienes en [dashboard.wompi.co](https://dashboard.wompi.co).
