@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { AutocompleteField, TextField } from "@/components/forms";
+import { formatCOP } from "@/lib/utils";
 import {
   checkoutFields,
   checkoutSections,
@@ -22,6 +23,8 @@ import {
   setMaskedCard,
   goToStep,
 } from "@/shared/predentation/stores/slices/ui.slice";
+import { checkoutSubmissionStore } from "@/modules/checkout/application/checkoutSubmission.store";
+import { computeCheckoutTotals } from "../domain/pricing.config";
 
 type CheckoutPageProps = WithCheckoutFormInjectedProps;
 
@@ -32,6 +35,10 @@ const CheckoutPageBase = ({
 }: CheckoutPageProps) => {
   const navigate = useNavigate();
   const product = useAppSelector((s) => s.ui.product);
+  const { subtotal, taxes, shipping, total } = useMemo(
+    () => computeCheckoutTotals(product.price),
+    [product.price],
+  );
 
   const groupedFields = useMemo(() => {
     return checkoutSections.map((section) => ({
@@ -75,7 +82,7 @@ const CheckoutPageBase = ({
                   </p>
                 </div>
                 <p className="num text-xs font-semibold text-[var(--text-primary)]">
-                  ${product.price.toFixed(2)}
+                  ${formatCOP(product.price)}
                 </p>
               </div>
 
@@ -85,11 +92,15 @@ const CheckoutPageBase = ({
               <div className="space-y-0.5 text-[0.65rem] text-[var(--text-secondary)]">
                 <div className="flex items-center justify-between">
                   <span>Subtotal</span>
-                  <span className="num">${product.price.toFixed(2)}</span>
+                  <span className="num">${formatCOP(subtotal)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>IVA (16%)</span>
+                  <span className="num">${formatCOP(taxes)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Envío</span>
-                  <span className="num">$12.00</span>
+                  <span className="num">${formatCOP(shipping)}</span>
                 </div>
               </div>
 
@@ -98,7 +109,7 @@ const CheckoutPageBase = ({
               {/* Total */}
               <div className="flex items-center justify-between text-xs font-semibold text-[var(--text-primary)]">
                 <span>Total</span>
-                <span className="num">${(product.price + 12).toFixed(2)}</span>
+                <span className="num">${formatCOP(total)}</span>
               </div>
 
               {/* Security badge */}
@@ -187,6 +198,7 @@ const DynamicField = ({ field }: DynamicFieldProps) => {
 };
 
 const persistCheckoutSubmission = async (values: CheckoutFormValues) => {
+  checkoutSubmissionStore.set(values);
   store.dispatch(
     setShipping({
       fullName: values.fullName,

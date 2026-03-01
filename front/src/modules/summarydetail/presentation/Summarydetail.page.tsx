@@ -1,17 +1,14 @@
+import { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  ArrowLeft,
-  ShieldCheck,
-  MapPin,
-  CreditCard,
-  Lock,
-} from "lucide-react";
+import { ArrowLeft, ShieldCheck, MapPin, CreditCard, Lock } from "lucide-react";
 import { useAppSelector } from "@/shared/predentation/stores/hooks";
 import { useAppDispatch } from "@/shared/predentation/stores/hooks";
 import {
   processPayment,
   type PaymentStatus,
 } from "@/shared/predentation/stores/slices/ui.slice";
+import { computeCheckoutTotals } from "@/modules/checkout/domain/pricing.config";
+import { formatCOP } from "@/lib/utils";
 
 /** Detect a simple brand badge color */
 const brandConfig: Record<string, { bg: string; text: string }> = {
@@ -28,34 +25,32 @@ export const SummarydetailPage = () => {
   const product = useAppSelector((s) => s.ui.product);
   const shipping = useAppSelector((s) => s.ui.shipping);
   const card = useAppSelector((s) => s.ui.maskedCard);
-  const paymentStatus = useAppSelector(
-    (s) => s.ui.payment.status,
-  ) as PaymentStatus;
+  const payment = useAppSelector((s) => s.ui.payment);
+  const paymentStatus = payment.status as PaymentStatus;
 
   const isProcessing = paymentStatus === "processing";
 
+  // Navigate to order status once payment settles
+  const step = useAppSelector((s) => s.ui.step);
+  useEffect(() => {
+    if (step === 4) {
+      navigate("/dashboard/order-status");
+    }
+  }, [step, navigate]);
+
   // Price calculations
-  const subtotal = product.price;
-  const shippingCost = 0; // Gratis
-  const iva = +(subtotal * 0.16).toFixed(2);
-  const total = +(subtotal + shippingCost + iva).toFixed(2);
+  const {
+    subtotal,
+    taxes: iva,
+    shipping: shippingCost,
+    total,
+  } = useMemo(() => computeCheckoutTotals(product.price), [product.price]);
 
   const brand = brandConfig[card?.brand ?? "Tarjeta"] ?? brandConfig.Tarjeta;
 
   const handleConfirm = () => {
     if (!shipping || !card) return;
-    dispatch(
-      processPayment({
-        card: {
-          number: `****${card.lastFour}`,
-          name: card.name,
-          expiry: card.expiry,
-          cvv: "***",
-        },
-        shipping,
-        product,
-      }),
-    );
+    dispatch(processPayment());
   };
 
   return (
@@ -86,7 +81,7 @@ export const SummarydetailPage = () => {
           <p className="text-[0.6rem] text-[var(--text-muted)]">Cantidad: 1</p>
         </div>
         <p className="num text-sm font-semibold text-[var(--text-primary)]">
-          ${subtotal.toFixed(2)}
+          ${formatCOP(subtotal)}
         </p>
       </div>
 
@@ -151,15 +146,15 @@ export const SummarydetailPage = () => {
         <div className="space-y-1.5 text-[0.8rem] text-[var(--text-secondary)]">
           <div className="flex items-center justify-between">
             <span>Subtotal</span>
-            <span className="num">${subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span>Envío</span>
-            <span className="font-medium text-emerald-600">Gratis</span>
+            <span className="num">${formatCOP(subtotal)}</span>
           </div>
           <div className="flex items-center justify-between">
             <span>IVA (16%)</span>
-            <span className="num">${iva.toFixed(2)}</span>
+            <span className="num">${formatCOP(iva)}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Envío</span>
+            <span className="num">${formatCOP(shippingCost)}</span>
           </div>
         </div>
 
@@ -167,7 +162,7 @@ export const SummarydetailPage = () => {
 
         <div className="flex items-center justify-between text-sm font-bold text-[var(--text-primary)]">
           <span>Total</span>
-          <span className="num text-base">${total.toFixed(2)}</span>
+          <span className="num text-base">${formatCOP(total)}</span>
         </div>
       </article>
 
@@ -192,7 +187,7 @@ export const SummarydetailPage = () => {
         ) : (
           <>
             <Lock size={13} strokeWidth={2.5} />
-            Confirmar y pagar ${total.toFixed(2)}
+            Confirmar y pagar ${formatCOP(total)}
           </>
         )}
       </button>

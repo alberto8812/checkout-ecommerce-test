@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import type { Product } from "@/modules/product/domain/entity/product.interface";
+import { createCardPayment } from "@/modules/checkout/api/create_card_payment";
+import { checkoutSubmissionStore } from "@/modules/checkout/application/checkoutSubmission.store";
+import { HttpError } from "@/shared/predentation/http";
+import type { RootState } from "../redux.global.store";
 
 
 export interface ShippingInfo {
@@ -33,6 +37,9 @@ export type PaymentStatus = "idle" | "processing" | "success" | "error";
 export interface PaymentResult {
     status: PaymentStatus;
     transactionId: string | null;
+    wompiTransactionId: string | null;
+    reference: string | null;
+    gatewayStatus: string | null;
     message: string | null;
     timestamp: string | null;
 }
@@ -65,31 +72,57 @@ function maskCardNumber(number: string): string {
 
 export const processPayment = createAsyncThunk(
     "checkout/processPayment",
-    async (
-        _payload: { card: CardInfo; shipping: ShippingInfo; product: Product },
-        { rejectWithValue }
-    ) => {
-        // Simulate tokenization — sensitive data never hits Redux
-        const token = `tok_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    async (_, { getState, rejectWithValue }) => {
+        const state = getState() as RootState;
+        const product = state.ui.product;
+        const shipping = state.ui.shipping;
 
-        // Simulate API call to payment gateway
-        await new Promise((resolve) => setTimeout(resolve, 2500));
-
-        // Simulate ~85% success rate for demo
-        const isSuccess = Math.random() > 0.15;
-
-        if (!isSuccess) {
-            return rejectWithValue({
-                message: "Pago rechazado. Verifica los datos de tu tarjeta e intenta nuevamente.",
-                transactionId: null,
-            });
+        if (!shipping) {
+            return rejectWithValue({ message: "No hay datos de envío, vuelve al formulario." });
         }
 
-        return {
-            transactionId: `txn_${token}`,
-            message: "Pago procesado exitosamente",
-            timestamp: new Date().toISOString(),
-        };
+        const submission = checkoutSubmissionStore.peek();
+        if (!submission) {
+            return rejectWithValue({ message: "Los datos de la tarjeta expiraron, completa el formulario nuevamente." });
+        }
+
+        try {
+            const response = await createCardPayment({
+                productId: product.id,
+                quantity: 1,
+                shipping: {
+                    fullName: shipping.fullName,
+                    email: shipping.email,
+                    address: shipping.address,
+                    city: shipping.city,
+                    postalCode: shipping.zipCode,
+                    country: shipping.country,
+                },
+                card: {
+                    number: submission.cardNumber.replace(/\s+/g, ""),
+                    cardHolder: submission.cardHolder,
+                    expiry: submission.expiry,
+                    cvv: submission.cvv,
+                    installments: 1,
+                },
+            });
+
+            checkoutSubmissionStore.consume();
+
+            return {
+                transactionId: response.transactionId,
+                wompiTransactionId: response.wompiTransactionId,
+                reference: response.reference,
+                gatewayStatus: response.status,
+                message: response.message,
+                timestamp: new Date().toISOString(),
+            };
+        } catch (error) {
+            if (error instanceof HttpError) {
+                return rejectWithValue({ message: error.message });
+            }
+            return rejectWithValue({ message: "No se pudo procesar el pago, intenta nuevamente." });
+        }
     }
 );
 
@@ -110,6 +143,9 @@ const initialState: CheckoutState = {
     payment: {
         status: "idle",
         transactionId: null,
+        wompiTransactionId: null,
+        reference: null,
+        gatewayStatus: null,
         message: null,
         timestamp: null,
     },
@@ -145,6 +181,9 @@ const checkoutSlice = createSlice({
             state.maskedCard = null;
             state.payment = { ...initialState.payment };
         },
+        updateGatewayStatus(state, action: PayloadAction<string>) {
+            state.payment.gatewayStatus = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -152,22 +191,33 @@ const checkoutSlice = createSlice({
                 state.payment.status = "processing";
                 state.payment.message = null;
                 state.payment.transactionId = null;
+                state.payment.wompiTransactionId = null;
+                state.payment.reference = null;
+                state.payment.gatewayStatus = null;
+                state.payment.timestamp = null;
             })
             .addCase(processPayment.fulfilled, (state, action) => {
                 state.payment.status = "success";
                 state.payment.transactionId = action.payload.transactionId;
+                state.payment.wompiTransactionId = action.payload.wompiTransactionId;
+                state.payment.reference = action.payload.reference;
+                state.payment.gatewayStatus = action.payload.gatewayStatus;
                 state.payment.message = action.payload.message;
                 state.payment.timestamp = action.payload.timestamp;
                 state.step = 4;
             })
             .addCase(processPayment.rejected, (state, action) => {
                 state.payment.status = "error";
-                const payload = action.payload as { message: string; transactionId: null } | undefined;
+                const payload = action.payload as { message: string } | undefined;
                 state.payment.message = payload?.message ?? "Error desconocido al procesar el pago.";
+                state.payment.gatewayStatus = null;
+                state.payment.reference = null;
+                state.payment.wompiTransactionId = null;
+                state.payment.transactionId = null;
                 state.step = 4;
             });
     },
 });
 
-export const { goToStep, setShipping, setMaskedCard, resetCheckout, setProduct } = checkoutSlice.actions;
+export const { goToStep, setShipping, setMaskedCard, resetCheckout, setProduct, updateGatewayStatus } = checkoutSlice.actions;
 export default checkoutSlice.reducer;

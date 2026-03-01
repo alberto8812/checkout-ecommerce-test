@@ -22,6 +22,13 @@ const SummarydetailPage = lazy(() =>
     }),
   ),
 );
+const OrderStatusPage = lazy(() =>
+  import("@/modules/orderstatus/presentation/OrderStatus.page").then(
+    (module) => ({
+      default: module.OrderStatusPage,
+    }),
+  ),
+);
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +65,14 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<LoadingPage />}>
                 <SummarydetailPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "order-status",
+            element: (
+              <Suspense fallback={<LoadingPage />}>
+                <OrderStatusPage />
               </Suspense>
             ),
           },

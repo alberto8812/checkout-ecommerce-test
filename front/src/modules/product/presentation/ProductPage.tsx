@@ -13,6 +13,7 @@ import {
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/shared/predentation/stores/redux.global.store";
 import { useNavigate } from "react-router-dom";
+import { formatCOP } from "@/lib/utils";
 const trustBadges = [
   { icon: ShieldCheck, label: "Pago seguro" },
   { icon: Truck, label: "Envío gratis" },
@@ -89,7 +90,7 @@ export const ProductPage = () => {
                 <span className="text-base font-semibold text-slate-400 mr-0.5">
                   $
                 </span>
-                {product.price.toFixed(2)}
+                {formatCOP(product.price)}
               </p>
               <p className="mt-1 text-xs text-slate-400">COP</p>
             </div>
@@ -112,7 +113,7 @@ export const ProductPage = () => {
           <p className="mb-5 text-xs text-slate-400">
             Tarifa base de transacción:{" "}
             <span className="font-medium text-slate-600">
-              ${product.base_fee.toFixed(2)}
+              ${formatCOP(product.base_fee)}
             </span>
           </p>
 
