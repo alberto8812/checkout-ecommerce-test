@@ -17,7 +17,7 @@ El proyecto sigue una arquitectura **monorepo** con dos aplicaciones independien
 ```
 [Usuario] → [React SPA :5173] → [NestJS API :3000] → [PostgreSQL :5433]
                                           ↕
-                                   [Wompi Gateway]
+                                   [pay Gateway]
 ```
 
 ---
