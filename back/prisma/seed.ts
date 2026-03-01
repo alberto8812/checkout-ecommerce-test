@@ -8,8 +8,9 @@ const adapter = new PrismaPg(pool, { schema: 'public' });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-    // Limpiar datos existentes
+    // Limpiar datos existentes (respetar FK: TransactionItem antes de Transaction)
     await prisma.delivery.deleteMany({});
+    await prisma.transactionItem.deleteMany({});
     await prisma.transaction.deleteMany({});
     await prisma.stock.deleteMany({});
     await prisma.customer.deleteMany({});
@@ -20,8 +21,8 @@ async function main() {
         data: {
             name: 'Laptop HP Pavilion 15',
             description: 'Laptop de alto rendimiento con procesador Intel i7, 16GB RAM y 512GB SSD',
-            price: 899.99,
-            base_fee: 25.0,
+            price: 1499000,  // COP
+            base_fee: 25000, // COP
             image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&h=500&fit=crop',
         },
     });

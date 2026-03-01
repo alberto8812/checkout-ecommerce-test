@@ -40,6 +40,11 @@ export class PrismaProductRepository implements IProductRepository {
 
   }
 
+  async findAll(): Promise<IProductRepositoryModel[]> {
+    const products = await this.prisma.product.findMany();
+    return products.map((product) => this.mapToModel(product));
+  }
+
   async findOne(id: string): Promise<IProductRepositoryModel | null> {
 
     const product = await this.prisma.product.findUnique({

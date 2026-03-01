@@ -1,75 +1,113 @@
-# React + TypeScript + Vite
+# Frontend — SPA de Checkout
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web de una sola página (SPA) para el flujo de checkout de e-commerce, construida con **React 19**, **Vite** y **TailwindCSS 4**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Stack
 
-## React Compiler
+| Tecnología          | Versión | Rol                                  |
+|---------------------|---------|--------------------------------------|
+| React               | 19      | UI                                   |
+| Vite                | 7       | Bundler / Dev server                 |
+| TypeScript          | 5.9     | Lenguaje                             |
+| TailwindCSS         | 4       | Estilos utilitarios                  |
+| shadcn/ui + Radix   | latest  | Componentes accesibles               |
+| React Router DOM    | 7       | Enrutamiento cliente                 |
+| TanStack Query      | 5       | Fetching y caché de datos            |
+| Redux Toolkit       | 2       | Estado global (carrito / checkout)   |
+| React Hook Form     | 7       | Manejo de formularios                |
+| Yup                 | 1       | Validación de esquemas               |
+| Axios               | 1       | Cliente HTTP                         |
+| Vitest              | 4       | Testing unitario                     |
+| MSW                 | 2       | Mock Service Worker (tests)          |
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+---
 
-Note: This will impact Vite dev & build performances.
+## Instalación y desarrollo
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm install
+pnpm run dev        # Dev server en http://localhost:5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Variable de entorno
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Crear `.env` en la raíz de `front/` si necesitas apuntar a un backend distinto:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+---
+
+## Estructura del proyecto
+
+```
+src/
+├── assets/                    # Imágenes y recursos estáticos
+├── components/                # Componentes reutilizables
+│   ├── forms/                 # TextField, AutocompleteField
+│   ├── loadings/              # LoadingPage (spinner de ruta)
+│   └── ui/                    # Componentes shadcn (Button, Card, Badge…)
+├── modules/                   # Módulos por página/dominio
+│   ├── product/               # Listado y selección de producto
+│   ├── checkout/              # Formulario de pago con tarjeta
+│   ├── summarydetail/         # Resumen de la orden
+│   └── orderstatus/           # Estado de la transacción
+├── shared/
+│   ├── predentation/
+│   │   ├── router/            # Definición de rutas (React Router)
+│   │   ├── layouts/           # DashboardLayout
+│   │   └── handkeErrors/      # GlobalErrorBoundary, PageError
+│   └── utils/                 # Helpers compartidos
+├── lib/                       # Utilidades generales (cn, etc.)
+├── App.tsx
+└── main.tsx
+```
+
+Cada módulo sigue la convención:
+
+```
+módulo/
+├── api/           # Llamadas HTTP (axios + TanStack Query)
+├── application/   # Lógica de negocio / hooks de aplicación
+├── domain/        # Tipos e interfaces
+└── presentation/  # Componentes y páginas
+```
+
+---
+
+## Rutas
+
+| Ruta                      | Componente          | Descripción                          |
+|---------------------------|---------------------|--------------------------------------|
+| `/dashboard/product`      | ProductPage         | Vista principal del producto         |
+| `/dashboard/checkout`     | CheckoutPage        | Formulario de pago                   |
+| `/dashboard/summary`      | SummarydetailPage   | Resumen de la orden                  |
+| `/dashboard/order-status` | OrderStatusPage     | Estado de la transacción             |
+| `/404` / `*`              | PageError           | Página de error                      |
+
+Todas las rutas del dashboard usan **lazy loading** con `Suspense`.
+
+---
+
+## Tests
+
+```bash
+pnpm run test             # Ejecución única
+pnpm run test:watch       # Modo watch
+pnpm run test:coverage    # Con cobertura
+pnpm run test:ui          # Interfaz visual Vitest UI
+```
+
+Los mocks de red usan **MSW** (`src/test/mocks/`).
+
+---
+
+## Build y preview
+
+```bash
+pnpm run build      # Genera dist/
+pnpm run preview    # Sirve el build en local
 ```

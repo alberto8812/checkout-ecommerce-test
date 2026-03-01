@@ -2,13 +2,17 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { PrismaClient } from "generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import { envs } from "../../config/envs";
 
 @Injectable()
 export class PrismaService implements OnModuleInit, OnModuleDestroy {
   private readonly client: PrismaClient;
 
   constructor() {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    if (!envs.databaseUrl) {
+      throw new Error("DATABASE_URL env var is not defined");
+    }
+    const pool = new Pool({ connectionString: envs.databaseUrl });
     const adapter = new PrismaPg(pool, { schema: 'public' });
     this.client = new PrismaClient({ adapter });
   }
@@ -35,6 +39,10 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
 
   get transaction() {
     return this.client.transaction;
+  }
+
+  get transactionItem() {
+    return this.client.transactionItem;
   }
 
   get delivery() {
