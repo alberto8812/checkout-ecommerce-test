@@ -1,6 +1,6 @@
 # Checkout E-Commerce
 
-Plataforma de e-commerce con integración al pasarela de pagos **Wompi**. Permite a los usuarios navegar productos, completar un checkout con tarjeta de crédito y consultar el estado de sus órdenes en tiempo real.
+Plataforma de e-commerce con integración al pasarela de pagos. Permite a los usuarios navegar productos, completar un checkout con tarjeta de crédito y consultar el estado de sus órdenes en tiempo real.
 
 ---
 
@@ -54,7 +54,7 @@ docker-compose up -d
 
 ```bash
 cd back
-cp .env.example .env   # Completar con tus claves Wompi
+cp .env.example .env   # Completar con tus claves 
 ```
 
 ### 3. Instalar dependencias y migrar
