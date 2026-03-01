@@ -7,6 +7,7 @@ import {
   checkoutSections,
   defaultValues,
   type CheckoutFieldConfig,
+  type CheckoutFormValues,
 } from "./constants/checkoutFormConfig";
 import { checkoutSchema } from "./schemas/checkout.schema";
 import {
@@ -15,6 +16,12 @@ import {
 } from "./hoc/withCheckoutForm";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/shared/predentation/stores/hooks";
+import { store } from "@/shared/predentation/stores/redux.global.store";
+import {
+  setShipping,
+  setMaskedCard,
+  goToStep,
+} from "@/shared/predentation/stores/slices/ui.slice";
 
 type CheckoutPageProps = WithCheckoutFormInjectedProps;
 
@@ -91,9 +98,7 @@ const CheckoutPageBase = ({
               {/* Total */}
               <div className="flex items-center justify-between text-xs font-semibold text-[var(--text-primary)]">
                 <span>Total</span>
-                <span className="num">
-                  ${(product.price + 12).toFixed(2)}
-                </span>
+                <span className="num">${(product.price + 12).toFixed(2)}</span>
               </div>
 
               {/* Security badge */}
@@ -181,8 +186,33 @@ const DynamicField = ({ field }: DynamicFieldProps) => {
   );
 };
 
+const persistCheckoutSubmission = async (values: CheckoutFormValues) => {
+  store.dispatch(
+    setShipping({
+      fullName: values.fullName,
+      email: values.email,
+      address: values.address,
+      city: values.city,
+      zipCode: values.postalCode,
+      country: values.country,
+    }),
+  );
+
+  store.dispatch(
+    setMaskedCard({
+      number: values.cardNumber.replace(/\s/g, ""),
+      name: values.cardHolder,
+      expiry: values.expiry,
+      cvv: values.cvv,
+    }),
+  );
+
+  store.dispatch(goToStep(3));
+};
+
 export const CheckoutPage = withCheckoutForm(CheckoutPageBase, {
   fields: checkoutFields,
   schema: checkoutSchema,
   defaultValues,
+  onSubmit: persistCheckoutSubmission,
 });
