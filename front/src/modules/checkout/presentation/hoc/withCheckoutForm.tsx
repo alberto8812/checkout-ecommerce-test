@@ -2,6 +2,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import type { ComponentType } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { BaseSyntheticEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import type { AnyObjectSchema } from "yup";
 import type {
   CheckoutFieldConfig,
@@ -13,6 +14,7 @@ interface WithCheckoutFormOptions {
   schema: AnyObjectSchema;
   defaultValues: CheckoutFormValues;
   onSubmit?: (values: CheckoutFormValues) => Promise<void> | void;
+  navigateTo?: string;
 }
 
 export interface WithCheckoutFormInjectedProps {
@@ -25,11 +27,12 @@ export const withCheckoutForm = <P extends WithCheckoutFormInjectedProps>(
   WrappedComponent: ComponentType<P>,
   options: WithCheckoutFormOptions,
 ) => {
-  const { fields, schema, defaultValues, onSubmit } = options;
+  const { fields, schema, defaultValues, onSubmit, navigateTo } = options;
 
   const ComponentWithForm = (
     props: Omit<P, keyof WithCheckoutFormInjectedProps>,
   ) => {
+    const navigate = useNavigate();
     const methods = useForm<CheckoutFormValues>({
       resolver: yupResolver(schema),
       defaultValues,
@@ -39,9 +42,12 @@ export const withCheckoutForm = <P extends WithCheckoutFormInjectedProps>(
     const submitHandler = methods.handleSubmit(async (data) => {
       if (onSubmit) {
         await onSubmit(data);
-        return;
+      } else {
+        console.table(data);
       }
-      console.table(data);
+      if (navigateTo) {
+        navigate(navigateTo);
+      }
     });
 
     return (

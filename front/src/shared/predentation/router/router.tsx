@@ -15,6 +15,13 @@ const CheckoutPage = lazy(() =>
     default: module.CheckoutPage,
   })),
 );
+const SummarydetailPage = lazy(() =>
+  import("@/modules/summarydetail/presentation/Summarydetail.page").then(
+    (module) => ({
+      default: module.SummarydetailPage,
+    }),
+  ),
+);
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +50,14 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<LoadingPage />}>
                 <CheckoutPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "summary",
+            element: (
+              <Suspense fallback={<LoadingPage />}>
+                <SummarydetailPage />
               </Suspense>
             ),
           },

@@ -215,4 +215,5 @@ export const CheckoutPage = withCheckoutForm(CheckoutPageBase, {
   schema: checkoutSchema,
   defaultValues,
   onSubmit: persistCheckoutSubmission,
+  navigateTo: "/dashboard/summary",
 });
